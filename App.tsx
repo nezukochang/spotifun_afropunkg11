@@ -1,118 +1,78 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useEffect, useState } from 'react';
+import { StatusBar, ActivityIndicator, View } from 'react-native';
+import { SetupService } from './src/services/audio/playerService';
+import { PlayerScreen } from './src/features/player/PlayerScreen';
+import { THEME } from './src/shared/theme';
+import { useAuthStore } from './src/stores/useAuthStore';
+import { initializeAuth } from './src/services/supabase/authService';
+import { LoginScreen } from './src/features/auth/LoginScreen';
+import { SignUpScreen } from './src/features/auth/SignUpScreen';
+import { OnboardingScreen } from './src/features/auth/OnboardingScreen';
+import { HomeScreen } from './src/features/home/HomeScreen';
+import { LibraryScreen } from './src/features/player/LibraryScreen';
+import { SettingsScreen } from './src/features/player/SettingsScreen';
+import { BottomNav, TabType } from './src/shared/ui/BottomNav';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const App = () => {
+  const { session, isLoading, hasSeenOnboarding } = useAuthStore();
+  const [isLoginMode, setIsLoginMode] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabType>('home');
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  useEffect(() => {
+    const setup = async () => {
+      try {
+        await initializeAuth();
+        // SetupService en arrière-plan, ne bloque pas l'affichage
+        SetupService().catch(e => console.error('SetupService failed:', e));
+      } catch (e) {
+        console.error('Initialization failed:', e);
+      }
+    };
+    setup();
+  }, []);
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: THEME.colors.void, justifyContent: 'center' }}>
+        <ActivityIndicator color={THEME.colors.accent} size="large" />
+      </View>
+    );
+  }
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  const renderContent = () => {
+    if (!hasSeenOnboarding) {
+      return <OnboardingScreen />;
+    }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+    if (!session) {
+      return isLoginMode ? (
+        <LoginScreen onToggleAuth={() => setIsLoginMode(false)} />
+      ) : (
+        <SignUpScreen onToggleAuth={() => setIsLoginMode(true)} />
+      );
+    }
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    switch (activeTab) {
+      case 'home': return <HomeScreen />;
+      case 'library': return <LibraryScreen />;
+      case 'player': return <PlayerScreen />;
+      case 'settings': return <SettingsScreen />;
+      default: return <HomeScreen />;
+    }
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View style={{ flex: 1, backgroundColor: THEME.colors.void }}>
+      <StatusBar barStyle="light-content" backgroundColor={THEME.colors.void} />
+      {renderContent()}
+      {session && (
+        <BottomNav
+          currentTab={activeTab}
+          onTabPress={setActiveTab}
+        />
+      )}
+    </View>
   );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;

@@ -1,0 +1,61 @@
+
+> SpotifunAfroPUNK@0.0.1 lint
+> eslint .
+
+
+/home/momor/Documents/spotifun-afropunk/App.tsx
+  35:20  warning  Inline style: { flex: 1, justifyContent: 'center' }  react-native/no-inline-styles
+  64:18  warning  Inline style: { flex: 1 }                            react-native/no-inline-styles
+
+/home/momor/Documents/spotifun-afropunk/src/features/auth/LoginScreen.tsx
+  7:10  error  'MorphingView' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/momor/Documents/spotifun-afropunk/src/features/auth/OnboardingScreen.tsx
+  11:9  error  'width' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/momor/Documents/spotifun-afropunk/src/features/player/LibraryScreen.tsx
+  43:46  warning  Do not define components during render. React will see a new component type on every render and destroy the entire subtree’s DOM nodes and state (https://reactjs.org/docs/reconciliation.html#elements-of-different-types). Instead, move this component definition out of the parent component “LibraryScreen” and pass data as props. If you want to allow component creation in props, set allowAsProps option to true  react/no-unstable-nested-components
+
+/home/momor/Documents/spotifun-afropunk/src/features/player/PlayerScreen.tsx
+   2:67  error    'Platform' is defined but never used  @typescript-eslint/no-unused-vars
+  42:72  warning  Inline style: { width: '45%' }        react-native/no-inline-styles
+
+/home/momor/Documents/spotifun-afropunk/src/services/audio/playerService.ts
+  4:5  error  'RepeatMode' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/momor/Documents/spotifun-afropunk/src/services/bluetooth/bleService.ts
+  1:30  error  'Characteristic' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/momor/Documents/spotifun-afropunk/src/services/supabase/authService.ts
+  27:46  warning  'session' is already declared in the upper scope on line 23 column 21  @typescript-eslint/no-shadow
+
+/home/momor/Documents/spotifun-afropunk/src/shared/ui/AfroPunkBackground.tsx
+  2:28  error  'Dimensions' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/momor/Documents/spotifun-afropunk/src/shared/ui/AfroPunkLogo.tsx
+  2:29  error  'View' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/momor/Documents/spotifun-afropunk/src/shared/ui/Animations.tsx
+   30:8   error  React Hook useEffect has a missing dependency: 'scale'. Either include it or remove the dependency array                                          react-hooks/exhaustive-deps
+   66:8   error  React Hook useEffect has missing dependencies: 'borderRadius1', 'borderRadius2', and 'scale'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  101:8   error  React Hook useEffect has a missing dependency: 'intensity'. Either include it or remove the dependency array                                      react-hooks/exhaustive-deps
+  148:8   error  React Hook useEffect has a missing dependency: 'opacity'. Either include it or remove the dependency array                                        react-hooks/exhaustive-deps
+  161:14  error  'Text' is not defined                                                                                                                             react/jsx-no-undef
+
+/home/momor/Documents/spotifun-afropunk/src/shared/ui/FriendsList.tsx
+  4:10  error  'GlassCard' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/momor/Documents/spotifun-afropunk/src/shared/ui/MorphBlob.tsx
+   6:5   error  'withSequence' is defined but never used                                                                                                                @typescript-eslint/no-unused-vars
+   8:5   error  'interpolate' is defined but never used                                                                                                                 @typescript-eslint/no-unused-vars
+  11:10  error  'StyleSheet' is defined but never used                                                                                                                  @typescript-eslint/no-unused-vars
+  48:8   error  React Hook useEffect has missing dependencies: 'duration', 'radius', 'scale', 'size', 'x', and 'y'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/momor/Documents/spotifun-afropunk/src/shared/ui/SocialPanel.tsx
+    2:62  error    'Image' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   18:12  error    'loading' is assigned a value but never used. Allowed unused elements of array destructuring patterns must match /^_/u                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+   23:8   error    React Hook useEffect has a missing dependency: 'loadComments'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                           react-hooks/exhaustive-deps
+  100:38  warning  Do not define components during render. React will see a new component type on every render and destroy the entire subtree’s DOM nodes and state (https://reactjs.org/docs/reconciliation.html#elements-of-different-types). Instead, move this component definition out of the parent component “SocialPanel” and pass data as props. If you want to allow component creation in props, set allowAsProps option to true  react/no-unstable-nested-components
+
+✖ 26 problems (20 errors, 6 warnings)
+

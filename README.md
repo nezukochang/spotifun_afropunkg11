@@ -44,6 +44,15 @@ yarn ios
 
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
 
+## Supabase configuration
+
+This app requires Supabase credentials in `src/services/supabase/client.ts`.
+
+- `SUPABASE_URL` should be your Supabase project URL.
+- `SUPABASE_ANON_KEY` should be your Supabase anon public key.
+
+For React Native, use a native-compatible env solution or update the constants directly in `src/services/supabase/client.ts` when testing locally.
+
 This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
 
 ## Step 3: Modifying your App
