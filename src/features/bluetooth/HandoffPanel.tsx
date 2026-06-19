@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator
 import { Device } from 'react-native-ble-plx';
 import { startScanning, stopScanning, connectToDevice, sendHandoff } from '../../services/bluetooth/bleService';
 import { GlassCard } from '../../shared/ui/GlassCard';
+import { HandoffStatus } from '../../types';
 import { THEME } from '../../shared/theme';
 
 interface HandoffPanelProps {
@@ -15,7 +16,7 @@ export const HandoffPanel: React.FC<HandoffPanelProps> = ({ trackId, positionMs,
     const [devices, setDevices] = useState<Device[]>([]);
     const [isScanning, setIsScanning] = useState(false);
     const [connectingId, setConnectingId] = useState<string | null>(null);
-    const [status, setStatus] = useState<'idle' | 'scanning' | 'connecting' | 'sending' | 'success' | 'error'>('idle');
+    const [status, setStatus] = useState<HandoffStatus>('idle');
 
     useEffect(() => {
         handleToggleScan();
@@ -69,6 +70,10 @@ export const HandoffPanel: React.FC<HandoffPanelProps> = ({ trackId, positionMs,
                 <TouchableOpacity onPress={onClose}>
                     <Text style={styles.closeIcon}>✕</Text>
                 </TouchableOpacity>
+            </View>
+
+            <View style={styles.positionInfo}>
+                <Text style={styles.positionLabel}>POSITION: {Math.round(positionMs / 1000)}s</Text>
             </View>
 
             <View style={styles.scanSection}>
@@ -133,6 +138,15 @@ const styles = StyleSheet.create({
     closeIcon: {
         color: THEME.colors.white,
         fontSize: 20,
+    },
+    positionInfo: {
+        marginBottom: THEME.spacing.sm,
+    },
+    positionLabel: {
+        color: THEME.colors.accent,
+        fontSize: 10,
+        fontWeight: '700',
+        letterSpacing: 1,
     },
     scanSection: {
         flexDirection: 'row',

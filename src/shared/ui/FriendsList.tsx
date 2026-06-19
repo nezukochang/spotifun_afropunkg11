@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { THEME } from '../theme';
+import { useThemeStore } from '../../stores/useThemeStore';
+import { useI18nStore } from '../i18n/useI18nStore';
 import { getFriends } from '../../services/catalog/socialService';
 import { useAuthStore } from '../../stores/useAuthStore';
 import { StaggeredEntry } from './Animations';
 
 export const FriendsList = () => {
     const { user } = useAuthStore();
+    const { colors } = useThemeStore();
+    const { t } = useI18nStore();
     const [friends, setFriends] = useState<any[]>([]);
 
     useEffect(() => {
         if (user) {
             getFriends(user.id).then(({ data }) => {
                 if (data) { setFriends(data); }
-            });
+            }).catch(() => {});
         }
     }, [user]);
 
@@ -28,25 +32,25 @@ export const FriendsList = () => {
                     <View style={styles.onlineIndicator} />
                 </View>
                 <View style={styles.friendInfo}>
-                    <Text style={styles.username}>{item.friend?.username || 'Username'}</Text>
-                    <Text style={styles.status}>ONLINE</Text>
+                    <Text style={[styles.username, { color: colors.white }]}>{item.friend?.username || 'Username'}</Text>
+                    <Text style={[styles.status, { color: colors.gray[400] }]}>ONLINE</Text>
                 </View>
-                <Text style={styles.sendIcon}>➔</Text>
+                <Text style={[styles.sendIcon, { color: colors.accent }]}>➔</Text>
             </TouchableOpacity>
         </StaggeredEntry>
     );
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>TRIBE CONNECTED</Text>
+            <Text style={[styles.title, { color: colors.white }]}>{t.tribeConnected}</Text>
             <FlatList
-                data={friends.length > 0 ? friends : [{ id: 'mock-1' }]} // Mock if empty for demo
+                data={friends.length > 0 ? friends : [{ id: 'mock-1' }]}
                 renderItem={renderFriend}
                 keyExtractor={item => item.id}
                 scrollEnabled={false}
             />
-            <TouchableOpacity style={styles.addButton}>
-                <Text style={styles.addText}>+ ADD TO TRIBE</Text>
+            <TouchableOpacity style={[styles.addButton, { backgroundColor: colors.glass, borderColor: colors.glassBorder }]}>
+                <Text style={[styles.addText, { color: colors.white }]}>{t.addToTribe}</Text>
             </TouchableOpacity>
         </View>
     );

@@ -1,38 +1,58 @@
 import React from 'react';
-import { Text, StyleSheet, StyleProp, ViewStyle, TextStyle, Pressable, Platform } from 'react-native';
+import { Text, StyleSheet, StyleProp, ViewStyle, TextStyle, Pressable } from 'react-native';
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withSpring,
+    withTiming,
 } from 'react-native-reanimated';
 import { THEME } from '../theme';
 
 interface ButtonProps {
     title: string;
     onPress: () => void;
-    variant?: 'accent' | 'punk' | 'outline';
+    variant?: 'accent' | 'punk' | 'outline' | 'gold';
     style?: StyleProp<ViewStyle>;
     textStyle?: StyleProp<TextStyle>;
+    size?: 'sm' | 'md' | 'lg';
 }
 
-export const Button = ({ title, onPress, variant = 'accent', style, textStyle }: ButtonProps) => {
+export const Button = ({ title, onPress, variant = 'accent', style, textStyle, size = 'md' }: ButtonProps) => {
     const scale = useSharedValue(1);
+    const glow = useSharedValue(0);
 
-    const backgroundColor = variant === 'accent' ? THEME.colors.accent : variant === 'punk' ? THEME.colors.gray[800] : 'transparent';
-    const borderColor = variant === 'outline' ? THEME.colors.accent : 'transparent';
-    const borderWidth = variant === 'outline' ? 1 : 0;
-    const textColor = variant === 'outline' ? THEME.colors.accent : THEME.colors.white;
+    const backgroundColor =
+        variant === 'accent' ? THEME.colors.accent
+        : variant === 'gold' ? THEME.colors.accentGold
+        : variant === 'punk' ? THEME.colors.surfaceLight
+        : 'transparent';
+
+    const borderColor = variant === 'outline' ? THEME.colors.accentGold : 'transparent';
+    const borderWidth = variant === 'outline' ? 1.5 : 0;
+    const textColor =
+        variant === 'outline' ? THEME.colors.accentGold
+        : variant === 'gold' ? THEME.colors.void
+        : THEME.colors.white;
 
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ scale: scale.value }],
+        shadowOpacity: glow.value,
     }));
 
     const onPressIn = () => {
-        scale.value = withSpring(0.95);
+        scale.value = withSpring(0.92, { damping: 12, stiffness: 300 });
+        glow.value = withTiming(0.5, { duration: 200 });
     };
 
     const onPressOut = () => {
-        scale.value = withSpring(1);
+        scale.value = withSpring(1, { damping: 15, stiffness: 200 });
+        glow.value = withTiming(0.2, { duration: 300 });
+    };
+
+    const sizeStyles = {
+        sm: { paddingVertical: THEME.spacing.sm, paddingHorizontal: THEME.spacing.md, height: 36 },
+        md: { paddingVertical: THEME.spacing.md, paddingHorizontal: THEME.spacing.lg, height: 48 },
+        lg: { paddingVertical: THEME.spacing.lg, paddingHorizontal: THEME.spacing.xl, height: 56 },
     };
 
     return (
@@ -44,12 +64,15 @@ export const Button = ({ title, onPress, variant = 'accent', style, textStyle }:
             <Animated.View
                 style={[
                     styles.button,
+                    sizeStyles[size],
                     { backgroundColor, borderColor, borderWidth },
                     animatedStyle,
                     style,
                 ]}
             >
-                <Text style={[styles.text, { color: textColor }, textStyle]}>{title.toUpperCase()}</Text>
+                <Text style={[styles.text, { color: textColor }, textStyle]}>
+                    {title.toUpperCase()}
+                </Text>
             </Animated.View>
         </Pressable>
     );
@@ -57,26 +80,17 @@ export const Button = ({ title, onPress, variant = 'accent', style, textStyle }:
 
 const styles = StyleSheet.create({
     button: {
-        paddingVertical: THEME.spacing.md,
-        paddingHorizontal: THEME.spacing.lg,
         borderRadius: THEME.borderRadius.lg,
         alignItems: 'center',
         justifyContent: 'center',
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-            },
-            android: {
-                elevation: 2,
-            },
-        }),
+        shadowColor: THEME.colors.accent,
+        shadowOffset: { width: 0, height: 4 },
+        shadowRadius: 12,
+        elevation: 4,
     },
     text: {
-        fontSize: THEME.typography.sizes.md,
+        fontSize: THEME.typography.sizes.sm,
         fontWeight: THEME.typography.weights.black as any,
-        letterSpacing: 2,
+        letterSpacing: 3,
     },
 });
