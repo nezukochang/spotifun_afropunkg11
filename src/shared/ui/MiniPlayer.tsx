@@ -105,9 +105,10 @@ export const MiniPlayer: React.FC = React.memo(() => {
                         <TouchableOpacity
                             onPress={(e) => {
                                 e.stopPropagation();
-                                playScale.value = withSpring(0.85, { damping: 12 }, () => {
-                                    playScale.value = withSpring(1);
-                                });
+                                playScale.value = withSequence(
+                                    withSpring(0.85, { damping: 12 }),
+                                    withSpring(1),
+                                );
                                 togglePlay();
                             }}
                             style={styles.playBtn}

@@ -84,6 +84,13 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        externalNativeBuild {
+            cmake {
+                // Suppress '$' in identifier warnings from RN codegen-generated C++ code
+                // which are treated as errors due to -Werror in the build flags.
+                cppFlags "-Wno-dollar-in-identifier-extension"
+            }
+        }
     }
     signingConfigs {
         debug {
